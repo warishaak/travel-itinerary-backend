@@ -4,7 +4,5 @@ from .models import Itinerary
 
 @admin.register(Itinerary)
 class ItineraryAdmin(admin.ModelAdmin):
-    list_display = ["title", "destination", "user", "start_date", "end_date"]
-
-admin.site.register(Itinerary, ItineraryAdmin)
+    list_display = ["title", "start_date", "end_date"]
 

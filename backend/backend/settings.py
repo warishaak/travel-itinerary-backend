@@ -25,10 +25,15 @@ SECRET_KEY = "django-insecure-zesgr64b%i8a7(&i+x%0i@33)9!3y($z=@m0()+sfh0tywrogz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
-# Application definition
+# CSRF trusted origins for development
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8000',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
