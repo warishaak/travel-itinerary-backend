@@ -25,7 +25,8 @@ SECRET_KEY = "django-insecure-zesgr64b%i8a7(&i+x%0i@33)9!3y($z=@m0()+sfh0tywrogz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 
+'shiny-space-robot-pj754qw7g7r9c6rj6-8000.app.github.dev']
 
 
 # CSRF trusted origins for development
@@ -33,6 +34,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://localhost:8000',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
+    'https://shiny-space-robot-pj754qw7g7r9c6rj6-8000.app.github.dev',
 ]
 
 INSTALLED_APPS = [
@@ -131,4 +133,34 @@ CORS_ORIGIN_WHITELIST = [
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/.*-3000\.app\.github\.dev$",
+    r"^https:\/\/.*-5175\.app\.github\.dev$"
+]
+
+CORS_ALLOWED_ORIGINS = [
+  "https://jubilant-cod-q7v5jg4v97553479w-5175.app.github.dev",
+  "https://jubilant-cod-q7v5jg4v97553479w-5173.app.github.dev",
+  "http://localhost:5173",
+  "http://localhost:3000",
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOWED_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
