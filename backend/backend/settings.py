@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 
 'shiny-space-robot-pj754qw7g7r9c6rj6-8000.app.github.dev']
+hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if hostname:
+    ALLOWED_HOSTS.append(hostname)
 
 
 # CSRF trusted origins for development
