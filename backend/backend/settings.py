@@ -133,21 +133,19 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+CORS_ALLOWED_ORIGINS = [
+    "https://jubilant-cod-q7v5jg4v97553479w-5173.app.github.dev",
+    "https://jubilant-cod-q7v5jg4v97553479w-3000.app.github.dev",
+    "http://localhost:5173",
+    "http://localhost:3000",
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https:\/\/.*-3000\.app\.github\.dev$",
-    r"^https:\/\/.*-5175\.app\.github\.dev$"
+    r"^https:\/\/.*-5173\.app\.github\.dev$"
 ]
 
-CORS_ALLOWED_ORIGINS = [
-  "https://jubilant-cod-q7v5jg4v97553479w-5175.app.github.dev",
-  "https://jubilant-cod-q7v5jg4v97553479w-5173.app.github.dev",
-  "http://localhost:5173",
-  "http://localhost:3000",
-]
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
