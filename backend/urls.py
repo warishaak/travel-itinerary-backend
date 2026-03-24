@@ -12,5 +12,6 @@ router.register(r'itineraries', views.ItineraryViewSet, 'itinerary')
 urlpatterns = [
     path('', lambda request: HttpResponse("Welcome to Travel Itinerary API")),
     path('admin/', admin.site.urls),
+    path('api/', include('authentication.urls')),
     path('api/', include(router.urls)),
 ]
