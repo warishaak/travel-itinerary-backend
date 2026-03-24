@@ -3,23 +3,13 @@ name: Backend CI
 on:
   push:
     branches: [main, develop]
-    paths:
-      - 'travel-itinerary-backend-main/**'
-      - '.github/workflows/backend-ci.yml'
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'travel-itinerary-backend-main/**'
-      - '.github/workflows/backend-ci.yml'
 
 jobs:
   format-check:
     name: Check Code Formatting
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: travel-itinerary-backend-main/backend
 
     steps:
       - name: Checkout code
@@ -40,10 +30,6 @@ jobs:
     name: Check Import Sorting
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: travel-itinerary-backend-main/backend
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -63,10 +49,6 @@ jobs:
     name: Lint Code
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: travel-itinerary-backend-main/backend
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -85,10 +67,6 @@ jobs:
   django-checks:
     name: Django System Checks
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: travel-itinerary-backend-main/backend
 
     steps:
       - name: Checkout code
