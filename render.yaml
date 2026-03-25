@@ -1,3 +1,9 @@
+databases:
+  - name: travel-itinerary-db
+    databaseName: travel_itinerary
+    user: travel_itinerary_user
+    plan: free
+
 services:
   - type: web
     name: travel-itinerary-backend
@@ -10,3 +16,7 @@ services:
         value: "False"
       - key: PYTHON_VERSION
         value: "3.11.0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: travel-itinerary-db
+          property: connectionString
