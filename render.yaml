@@ -10,7 +10,7 @@ services:
     env: python
     plan: free
     buildCommand: bash build.sh
-    startCommand: cd backend && gunicorn backend.wsgi:application
+    startCommand: gunicorn backend.wsgi:application
     envVars:
       - key: DEBUG
         value: "False"
