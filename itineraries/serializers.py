@@ -18,6 +18,17 @@ class ItinerarySerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at"]
 
     def validate(self, data):
-        if data["end_date"] < data["start_date"]:
-            raise serializers.ValidationError("End date must be after start date")
+        # For partial updates, we need to get the existing values
+        if self.instance:
+            start_date = data.get("start_date", self.instance.start_date)
+            end_date = data.get("end_date", self.instance.end_date)
+        else:
+            start_date = data.get("start_date")
+            end_date = data.get("end_date")
+
+        # Only validate if both dates are present
+        if start_date and end_date:
+            if end_date < start_date:
+                raise serializers.ValidationError("End date must be after start date")
+
         return data
