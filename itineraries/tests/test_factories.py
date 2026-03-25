@@ -4,7 +4,6 @@ from itineraries.models import Itinerary
 
 
 class ItineraryFactory:
-
     @staticmethod
     def build_valid_itinerary_data(**kwargs):
         default_data = {
