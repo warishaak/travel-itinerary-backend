@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     "itineraries",
 ]
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
