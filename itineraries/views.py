@@ -5,6 +5,5 @@ from .serializers import ItinerarySerializer
 
 
 class ItineraryViewSet(viewsets.ModelViewSet):
-
     serializer_class = ItinerarySerializer
     queryset = Itinerary.objects.all()

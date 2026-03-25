@@ -103,7 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv/
 env/
 venv/
 ENV/
@@ -130,3 +130,5 @@ dmypy.json
 
 # Django static files
 staticfiles/
+.venv/
+venv/
