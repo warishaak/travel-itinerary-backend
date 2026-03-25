@@ -21,13 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-me')
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 
-'shiny-space-robot-pj754qw7g7r9c6rj6-8000.app.github.dev']
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "shiny-space-robot-pj754qw7g7r9c6rj6-8000.app.github.dev",
+]
 hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if hostname:
     ALLOWED_HOSTS.append(hostname)
@@ -123,29 +126,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
 ]
 
 CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
 
 # Environment-based CORS configuration
@@ -154,11 +157,11 @@ if not DEBUG:
     CORS_ALLOWED_ORIGINS = [frontend_url]
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^https:\/\/.*-3000\.app\.github\.dev$",
-        r"^https:\/\/.*-5173\.app\.github\.dev$"
+        r"^https:\/\/.*-5173\.app\.github\.dev$",
     ]
     CSRF_TRUSTED_ORIGINS = [frontend_url]
     # Only add RENDER_EXTERNAL_HOSTNAME if it's actually set
-    render_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME', '').strip()
+    render_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME", "").strip()
     if render_hostname:
         CSRF_TRUSTED_ORIGINS.append(f"https://{render_hostname}")
 else:
@@ -169,15 +172,15 @@ else:
     ]
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^https:\/\/.*-3000\.app\.github\.dev$",
-        r"^https:\/\/.*-5173\.app\.github\.dev$"
+        r"^https:\/\/.*-5173\.app\.github\.dev$",
     ]
     CSRF_TRUSTED_ORIGINS = [
-        'https://localhost:8000',
-        'http://localhost:8000',
-        'http://127.0.0.1:8000',
-        'https://shiny-space-robot-pj754qw7g7r9c6rj6-8000.app.github.dev',
-        'https://jubilant-cod-q7v5jg4v97553479w-5173.app.github.dev',
-        'https://jubilant-cod-q7v5jg4v97553479w-3000.app.github.dev',
-        'http://localhost:5173',
-        'http://localhost:3000',
+        "https://localhost:8000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "https://shiny-space-robot-pj754qw7g7r9c6rj6-8000.app.github.dev",
+        "https://jubilant-cod-q7v5jg4v97553479w-5173.app.github.dev",
+        "https://jubilant-cod-q7v5jg4v97553479w-3000.app.github.dev",
+        "http://localhost:5173",
+        "http://localhost:3000",
     ]
