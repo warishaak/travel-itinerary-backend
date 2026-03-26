@@ -3,7 +3,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import RegisterSerializer, UserSerializer, UserUpdateSerializer
+from .serializers import (RegisterSerializer, UserSerializer,
+                          UserUpdateSerializer)
 
 User = get_user_model()
 
@@ -20,7 +21,11 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         return Response(
-            {"id": user.id, "email": user.email, "message": "User created successfully"},
+            {
+                "id": user.id,
+                "email": user.email,
+                "message": "User created successfully",
+            },
             status=status.HTTP_201_CREATED,
         )
 

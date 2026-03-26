@@ -27,6 +27,30 @@ repos:
 
   - repo: local
     hooks:
+      - id: black-check
+        name: Black formatting check
+        entry: .venv/bin/black --check .
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
+      - id: isort-check
+        name: isort import sorting check
+        entry: .venv/bin/isort --check-only .
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
+      - id: ruff-check
+        name: Ruff lint check
+        entry: .venv/bin/ruff check . --exclude=venv,migrations
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
       - id: django-system-check
         name: Django system check
         entry: .venv/bin/python manage.py check
