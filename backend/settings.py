@@ -40,6 +40,7 @@ if hostname:
 
 INSTALLED_APPS = [
     "users",
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -49,11 +50,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "itineraries",
 ]
-
-# Admin is temporarily disabled during initial migration to avoid custom user model
-# dependency issues. It will be re-enabled in the admin configuration module.
-# TODO: Re-enable after first successful deployment
-# "django.contrib.admin",
 
 AUTH_USER_MODEL = "users.User"
 
