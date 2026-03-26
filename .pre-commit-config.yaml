@@ -24,3 +24,29 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: django-system-check
+        name: Django system check
+        entry: .venv/bin/python manage.py check
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
+      - id: django-migrations-check
+        name: Django migrations check
+        entry: .venv/bin/python manage.py makemigrations --check --dry-run --no-input
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
+      - id: django-tests
+        name: Django tests
+        entry: .venv/bin/python manage.py test --verbosity=1
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
