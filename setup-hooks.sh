@@ -35,4 +35,3 @@ echo "Installing pre-commit and pre-push hooks..."
 
 echo "Backend hook setup complete."
 echo "Pre-push checks run: black, isort, ruff, django check, migration check, and tests."
-

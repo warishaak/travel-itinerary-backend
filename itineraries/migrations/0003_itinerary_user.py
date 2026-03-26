@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("itineraries", "0002_alter_itinerary_options"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

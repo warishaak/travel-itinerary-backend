@@ -3,7 +3,7 @@ repos:
     rev: 23.12.1
     hooks:
       - id: black
-        language_version: python3.11
+        language_version: python3.14
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2
@@ -37,7 +37,7 @@ repos:
 
       - id: isort-check
         name: isort import sorting check
-        entry: .venv/bin/isort --check-only .
+        entry: .venv/bin/isort --check-only --profile black .
         language: system
         pass_filenames: false
         always_run: true
