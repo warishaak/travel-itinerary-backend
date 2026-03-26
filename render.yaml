@@ -1,7 +1,7 @@
 databases:
   - name: travel-itinerary-db
-    databaseName: travel_itinerary_v2
-    user: travel_itinerary_user
+    databaseName: travel_itinerary_clean
+    user: travel_itinerary_clean_user
     plan: free
 
 services:
@@ -9,7 +9,7 @@ services:
     name: travel-itinerary-backend
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
     startCommand: gunicorn backend.wsgi:application
     envVars:
       - key: DEBUG
