@@ -1,6 +1,6 @@
 databases:
   - name: travel-itinerary-db
-    databaseName: travel_itinerary
+    databaseName: travel_itinerary_v2
     user: travel_itinerary_user
     plan: free
 
