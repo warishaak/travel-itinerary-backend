@@ -3,7 +3,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import RegisterSerializer, UserSerializer, UserUpdateSerializer
+from .serializers import (RegisterSerializer, UserSerializer,
+                          UserUpdateSerializer)
 
 User = get_user_model()
 
