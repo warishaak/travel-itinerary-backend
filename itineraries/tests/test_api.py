@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -160,3 +161,34 @@ class ItineraryAPITest(APITestCase):
         response = self.client.delete(self.detail_url(99999))
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_register_user_returns_201(self):
+        """Test POST /api/register/ creates a user."""
+        data = {
+            "username": "newuser",
+            "email": "newuser@example.com",
+            "password": "strongpass123",
+        }
+
+        response = self.client.post("/api/register/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(User.objects.filter(username="newuser").exists())
+
+    def test_token_obtain_returns_200(self):
+        """Test POST /api/token/ returns access and refresh tokens."""
+        User.objects.create_user(
+            username="loginuser",
+            email="loginuser@example.com",
+            password="strongpass123",
+        )
+
+        response = self.client.post(
+            "/api/token/",
+            {"username": "loginuser", "password": "strongpass123"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("access", response.data)
+        self.assertIn("refresh", response.data)
