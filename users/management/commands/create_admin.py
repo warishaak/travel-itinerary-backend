@@ -14,13 +14,22 @@ class Command(BaseCommand):
         username = os.getenv("ADMIN_USERNAME", "admin")
         password = os.getenv("ADMIN_PASSWORD", "admin123")
 
-        if User.objects.filter(email=email).exists():
-            self.stdout.write(
-                self.style.WARNING(f"Admin user {email} already exists, skipping...")
-            )
-            return
-
-        User.objects.create_superuser(username=username, email=email, password=password)
-        self.stdout.write(
-            self.style.SUCCESS(f"✓ Created admin user: {username} ({email})")
+        # Try to get existing user or create new one
+        user, created = User.objects.get_or_create(
+            email=email, defaults={"username": username}
         )
+
+        # Always update to ensure superuser status and correct password
+        user.set_password(password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
+
+        if created:
+            self.stdout.write(
+                self.style.SUCCESS(f"✓ Created admin user: {username} ({email})")
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(f"✓ Updated admin user: {username} ({email})")
+            )
