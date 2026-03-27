@@ -191,6 +191,79 @@ class EmailService:
             plain_text_content=plain_text_content,
         )
 
+    def send_password_reset_email(
+        self, user_email: str, user_name: str, reset_token: str
+    ) -> bool:
+        """
+        Send a password reset email with a reset link.
+
+        Args:
+            user_email: User's email address
+            user_name: User's name
+            reset_token: Password reset token
+
+        Returns:
+            bool: True if email was sent successfully, False otherwise
+        """
+        frontend_url = settings.FRONTEND_URL
+        reset_link = f"{frontend_url}/reset-password/{reset_token}"
+
+        subject = "Reset Your Password - Travel Itinerary"
+        html_content = f"""
+        <html>
+            <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f8fafc;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h2 style="color: #0f766e; margin-top: 0;">Reset Your Password</h2>
+                    <p>Hi {user_name},</p>
+                    <p>We received a request to reset your password for your Travel Itinerary account.</p>
+                    <p>Click the button below to reset your password. This link will expire in <strong>1 hour</strong>.</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="{reset_link}" style="background-color: #0f766e; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Reset Password</a>
+                    </div>
+                    <p style="color: #64748b; font-size: 14px;">Or copy and paste this link into your browser:</p>
+                    <p style="color: #0f766e; word-break: break-all; font-size: 14px;">{reset_link}</p>
+                    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+                    <p style="color: #64748b; font-size: 13px;">
+                        <strong>Security Notice:</strong> If you didn't request this password reset, please ignore this email.
+                        Your password will remain unchanged.
+                    </p>
+                    <p style="color: #64748b; font-size: 13px;">
+                        This link expires in 1 hour for security reasons.
+                    </p>
+                    <br>
+                    <p style="color: #64748b;">Best regards,</p>
+                    <p style="color: #64748b;"><strong>The Travel Itinerary Team</strong></p>
+                </div>
+            </body>
+        </html>
+        """
+        plain_text_content = f"""
+        Reset Your Password
+
+        Hi {user_name},
+
+        We received a request to reset your password for your Travel Itinerary account.
+
+        Click the link below to reset your password. This link will expire in 1 hour.
+
+        {reset_link}
+
+        Security Notice: If you didn't request this password reset, please ignore this email.
+        Your password will remain unchanged.
+
+        This link expires in 1 hour for security reasons.
+
+        Best regards,
+        The Travel Itinerary Team
+        """
+
+        return self.send_email(
+            to_emails=user_email,
+            subject=subject,
+            html_content=html_content,
+            plain_text_content=plain_text_content,
+        )
+
 
 # Create a singleton instance
 email_service = EmailService()

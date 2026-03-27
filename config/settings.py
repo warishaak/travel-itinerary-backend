@@ -209,3 +209,6 @@ else:
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 FROM_EMAIL = os.getenv("FROM_EMAIL", "noreply@example.com")
 DEFAULT_TO_EMAIL = os.getenv("TO_EMAIL")
+
+# Frontend URL for password reset links
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")

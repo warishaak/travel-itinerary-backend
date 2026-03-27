@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
+from .models import PasswordReset
+
 User = get_user_model()
 
 
@@ -54,3 +56,45 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data.get("last_name", ""),
         )
         return user
+
+
+class RequestPasswordResetSerializer(serializers.Serializer):
+    """Serializer for requesting a password reset."""
+
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        # Normalize email to lowercase
+        return value.lower()
+
+
+class ConfirmPasswordResetSerializer(serializers.Serializer):
+    """Serializer for confirming password reset with token."""
+
+    token = serializers.CharField(max_length=100)
+    password = serializers.CharField(write_only=True, validators=[validate_password])
+    password_confirm = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        # Validate passwords match
+        if attrs["password"] != attrs["password_confirm"]:
+            raise serializers.ValidationError(
+                {"password_confirm": "Passwords do not match."}
+            )
+
+        # Validate token exists and is valid
+        try:
+            reset = PasswordReset.objects.get(token=attrs["token"])
+        except PasswordReset.DoesNotExist:
+            raise serializers.ValidationError(
+                {"token": "Token is invalid or has expired."}
+            )
+
+        if not reset.is_valid():
+            raise serializers.ValidationError(
+                {"token": "Token is invalid or has expired."}
+            )
+
+        # Store the reset object for use in the view
+        attrs["reset"] = reset
+        return attrs
