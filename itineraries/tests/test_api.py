@@ -190,7 +190,9 @@ class ItineraryAPITest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(len(response.data["activities"]), 2)
-        self.assertEqual(response.data["activities"][0]["name"], "Visit Tower of London")
+        self.assertEqual(
+            response.data["activities"][0]["name"], "Visit Tower of London"
+        )
 
     def test_create_itinerary_assigns_user_automatically(self):
         self.client.force_authenticate(user=self.user)

@@ -92,8 +92,7 @@ class URLRoutingTest(TestCase):
 
         for url in api_urls:
             self.assertTrue(
-                url.startswith("/api/"),
-                f"URL {url} does not start with /api/ prefix"
+                url.startswith("/api/"), f"URL {url} does not start with /api/ prefix"
             )
 
     def test_url_patterns_use_trailing_slash(self):
@@ -109,8 +108,7 @@ class URLRoutingTest(TestCase):
 
         for url in urls:
             self.assertTrue(
-                url.endswith("/"),
-                f"URL {url} does not have trailing slash"
+                url.endswith("/"), f"URL {url} does not have trailing slash"
             )
 
     def test_detail_urls_accept_integer_pk(self):

@@ -12,7 +12,9 @@ class UserFactory:
     @staticmethod
     def build_valid_user_data(**kwargs):
         """Build valid user data dictionary."""
-        random_suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
+        random_suffix = "".join(
+            random.choices(string.ascii_lowercase + string.digits, k=6)
+        )
         default_data = {
             "email": f"testuser{random_suffix}@example.com",
             "password": "TestPass123!",
@@ -73,7 +75,11 @@ class UserFactory:
     def build_weak_password_data():
         """Build registration data with weak passwords."""
         return [
-            {"email": "weak1@example.com", "password": "123", "password_confirm": "123"},
+            {
+                "email": "weak1@example.com",
+                "password": "123",
+                "password_confirm": "123",
+            },
             {
                 "email": "weak2@example.com",
                 "password": "password",

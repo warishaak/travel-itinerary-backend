@@ -152,6 +152,7 @@ class ItineraryModelTest(TestCase):
         original_updated_at = itinerary.updated_at
 
         import time
+
         time.sleep(0.01)
 
         itinerary.title = "Updated Title"

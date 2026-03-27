@@ -45,7 +45,9 @@ class UserModelTest(TestCase):
 
     def test_email_is_required(self):
         """Test creating user without email creates user with empty string."""
-        user = User.objects.create_user(email="", password="TestPass123!", username="test")
+        user = User.objects.create_user(
+            email="", password="TestPass123!", username="test"
+        )
         self.assertEqual(user.email, "")
         self.assertEqual(user.username, "test")
 
@@ -53,7 +55,9 @@ class UserModelTest(TestCase):
         """Test USERNAME_FIELD is configured as email."""
         self.assertEqual(User.USERNAME_FIELD, "email")
 
-        user = UserFactory.create_user(email="auth@example.com", password="TestPass123!")
+        user = UserFactory.create_user(
+            email="auth@example.com", password="TestPass123!"
+        )
         self.assertTrue(user.check_password("TestPass123!"))
 
     def test_required_fields_configuration(self):

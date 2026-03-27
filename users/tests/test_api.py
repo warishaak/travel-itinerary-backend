@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .test_factories import UserFactory
 from . import get_authenticated_client
+from .test_factories import UserFactory
 
 User = get_user_model()
 
@@ -41,7 +41,9 @@ class UserRegistrationAPITest(APITestCase):
     def test_register_hashes_password_not_plain_text(self):
         """Test password is hashed, not stored as plain text."""
         data = UserFactory.build_registration_data(
-            email="hashtest@example.com", password="TestPass123!", password_confirm="TestPass123!"
+            email="hashtest@example.com",
+            password="TestPass123!",
+            password_confirm="TestPass123!",
         )
         response = self.client.post(self.register_url, data)
 
@@ -278,7 +280,9 @@ class JWTAuthenticationTest(APITestCase):
         )
         refresh_token = token_response.data["refresh"]
 
-        refresh_response = self.client.post(self.refresh_url, {"refresh": refresh_token})
+        refresh_response = self.client.post(
+            self.refresh_url, {"refresh": refresh_token}
+        )
 
         self.assertEqual(refresh_response.status_code, status.HTTP_200_OK)
         self.assertIn("access", refresh_response.data)

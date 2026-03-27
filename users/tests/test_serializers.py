@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from users.serializers import RegisterSerializer, UserSerializer, UserUpdateSerializer
@@ -55,11 +54,11 @@ class RegisterSerializerTest(TestCase):
         weak_passwords = UserFactory.build_weak_password_data()
 
         for data in weak_passwords:
-            data.update(
-                {"first_name": "Test", "last_name": "User"}
-            )
+            data.update({"first_name": "Test", "last_name": "User"})
             serializer = RegisterSerializer(data=data)
-            self.assertFalse(serializer.is_valid(), f"Password {data['password']} should fail")
+            self.assertFalse(
+                serializer.is_valid(), f"Password {data['password']} should fail"
+            )
             self.assertIn("password", serializer.errors)
 
     def test_password_similar_to_email_fails_validation(self):
@@ -87,14 +86,18 @@ class RegisterSerializerTest(TestCase):
         common_passwords = ["password", "12345678"]
 
         for pwd in common_passwords:
-            data = UserFactory.build_registration_data(password=pwd, password_confirm=pwd)
+            data = UserFactory.build_registration_data(
+                password=pwd, password_confirm=pwd
+            )
             serializer = RegisterSerializer(data=data)
             self.assertFalse(serializer.is_valid())
             self.assertIn("password", serializer.errors)
 
     def test_password_min_length_validation(self):
         """Test password minimum length validation."""
-        data = UserFactory.build_registration_data(password="Test1!", password_confirm="Test1!")
+        data = UserFactory.build_registration_data(
+            password="Test1!", password_confirm="Test1!"
+        )
         serializer = RegisterSerializer(data=data)
 
         self.assertFalse(serializer.is_valid())

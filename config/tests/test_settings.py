@@ -44,7 +44,7 @@ class SettingsConfigurationTest(TestCase):
             self.assertIn(
                 app,
                 settings.INSTALLED_APPS,
-                f"Required app {app} not in INSTALLED_APPS"
+                f"Required app {app} not in INSTALLED_APPS",
             )
 
     def test_middleware_order_is_correct(self):
@@ -53,18 +53,23 @@ class SettingsConfigurationTest(TestCase):
 
         # SecurityMiddleware should be first
         self.assertEqual(
-            middleware_list[0],
-            "django.middleware.security.SecurityMiddleware"
+            middleware_list[0], "django.middleware.security.SecurityMiddleware"
         )
 
         # CORS should be early (after security)
         cors_index = middleware_list.index("corsheaders.middleware.CorsMiddleware")
-        security_index = middleware_list.index("django.middleware.security.SecurityMiddleware")
+        security_index = middleware_list.index(
+            "django.middleware.security.SecurityMiddleware"
+        )
         self.assertLess(security_index, cors_index)
 
         # SessionMiddleware before AuthenticationMiddleware
-        session_index = middleware_list.index("django.contrib.sessions.middleware.SessionMiddleware")
-        auth_index = middleware_list.index("django.contrib.auth.middleware.AuthenticationMiddleware")
+        session_index = middleware_list.index(
+            "django.contrib.sessions.middleware.SessionMiddleware"
+        )
+        auth_index = middleware_list.index(
+            "django.contrib.auth.middleware.AuthenticationMiddleware"
+        )
         self.assertLess(session_index, auth_index)
 
     def test_rest_framework_authentication_configured(self):
@@ -74,8 +79,7 @@ class SettingsConfigurationTest(TestCase):
 
         auth_classes = rest_config["DEFAULT_AUTHENTICATION_CLASSES"]
         self.assertIn(
-            "rest_framework_simplejwt.authentication.JWTAuthentication",
-            auth_classes
+            "rest_framework_simplejwt.authentication.JWTAuthentication", auth_classes
         )
 
     def test_database_configuration_exists(self):
@@ -108,7 +112,7 @@ class SettingsConfigurationTest(TestCase):
             self.assertIn(
                 method,
                 settings.CORS_ALLOW_METHODS,
-                f"HTTP method {method} not in CORS_ALLOW_METHODS"
+                f"HTTP method {method} not in CORS_ALLOW_METHODS",
             )
 
     def test_cors_allowed_headers_configured(self):
@@ -120,7 +124,7 @@ class SettingsConfigurationTest(TestCase):
             self.assertIn(
                 header,
                 settings.CORS_ALLOW_HEADERS,
-                f"Header {header} not in CORS_ALLOW_HEADERS"
+                f"Header {header} not in CORS_ALLOW_HEADERS",
             )
 
     def test_root_urlconf_configured(self):
@@ -133,10 +137,7 @@ class SettingsConfigurationTest(TestCase):
 
     def test_default_auto_field_configured(self):
         """Test that DEFAULT_AUTO_FIELD is configured."""
-        self.assertEqual(
-            settings.DEFAULT_AUTO_FIELD,
-            "django.db.models.BigAutoField"
-        )
+        self.assertEqual(settings.DEFAULT_AUTO_FIELD, "django.db.models.BigAutoField")
 
     def test_timezone_settings(self):
         """Test that timezone settings are configured."""
@@ -163,7 +164,7 @@ class SettingsConfigurationTest(TestCase):
         template_config = settings.TEMPLATES[0]
         self.assertEqual(
             template_config["BACKEND"],
-            "django.template.backends.django.DjangoTemplates"
+            "django.template.backends.django.DjangoTemplates",
         )
         self.assertTrue(template_config["APP_DIRS"])
 
@@ -184,12 +185,9 @@ class SettingsConfigurationTest(TestCase):
         for validator in required_validators:
             self.assertTrue(
                 any(validator in name for name in validator_names),
-                f"Required validator {validator} not configured"
+                f"Required validator {validator} not configured",
             )
 
     def test_whitenoise_middleware_configured(self):
         """Test that WhiteNoise middleware is configured for static files."""
-        self.assertIn(
-            "whitenoise.middleware.WhiteNoiseMiddleware",
-            settings.MIDDLEWARE
-        )
+        self.assertIn("whitenoise.middleware.WhiteNoiseMiddleware", settings.MIDDLEWARE)
