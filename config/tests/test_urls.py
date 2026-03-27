@@ -1,4 +1,5 @@
 """Tests for URL routing configuration."""
+
 from django.test import TestCase
 from django.urls import resolve, reverse
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
