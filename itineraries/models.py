@@ -14,6 +14,8 @@ class Itinerary(models.Model):
     destination = models.TextField(max_length=200)
     start_date = models.DateField()
     end_date = models.DateField()
+    is_public = models.BooleanField(default=False)
+    activities = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

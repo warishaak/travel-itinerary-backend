@@ -19,4 +19,6 @@ class ItineraryViewSet(viewsets.ModelViewSet):
 class PublicItineraryViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [AllowAny]
     serializer_class = ItinerarySerializer
-    queryset = Itinerary.objects.all()
+
+    def get_queryset(self):
+        return Itinerary.objects.filter(is_public=True)
