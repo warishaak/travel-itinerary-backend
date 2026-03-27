@@ -177,6 +177,7 @@ if not DEBUG:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^https:\/\/.*-3000\.app\.github\.dev$",
         r"^https:\/\/.*-5173\.app\.github\.dev$",
+        r"^https:\/\/.*\.onrender\.com$",  # Allow all Render deployments
     ]
     CSRF_TRUSTED_ORIGINS = [frontend_url]
     # Only add RENDER_EXTERNAL_HOSTNAME if it's actually set
