@@ -21,7 +21,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install Black
-        run: pip install black==23.12.1
+        run: pip install black==26.3.1
 
       - name: Run Black formatter check
         run: black --check .
