@@ -88,3 +88,73 @@ class ItineraryModelTest(TestCase):
         self.assertEqual(title_field.max_length, 200)
         self.assertEqual(destination_field.max_length, 200)
         self.assertFalse(title_field.blank)
+
+    def test_default_is_public_is_false(self):
+        """Test that is_public defaults to False"""
+        itinerary = Itinerary.objects.create(
+            title="Private Trip",
+            destination="Secret Location",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=2),
+        )
+
+        self.assertFalse(itinerary.is_public)
+
+    def test_activities_field_defaults_to_empty_list(self):
+        """Test that activities field defaults to empty list"""
+        itinerary = Itinerary.objects.create(
+            title="No Activities Trip",
+            destination="Somewhere",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=1),
+        )
+
+        self.assertEqual(itinerary.activities, [])
+
+    def test_activities_field_stores_json_data(self):
+        """Test that activities field can store JSON data"""
+        activities_data = [
+            {"name": "Activity 1", "time": "10:00 AM", "location": "Place A"},
+            {"name": "Activity 2", "time": "2:00 PM", "location": "Place B"},
+        ]
+        itinerary = Itinerary.objects.create(
+            title="Activities Trip",
+            destination="Test City",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=3),
+            activities=activities_data,
+        )
+
+        self.assertEqual(len(itinerary.activities), 2)
+        self.assertEqual(itinerary.activities[0]["name"], "Activity 1")
+        self.assertEqual(itinerary.activities[1]["location"], "Place B")
+
+    def test_user_field_can_be_null(self):
+        """Test that user field can be null"""
+        itinerary = Itinerary.objects.create(
+            user=None,
+            title="No User Trip",
+            destination="Anywhere",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=1),
+        )
+
+        self.assertIsNone(itinerary.user)
+
+    def test_updated_at_changes_on_save(self):
+        """Test that updated_at changes when itinerary is saved"""
+        itinerary = Itinerary.objects.create(
+            title="Update Test",
+            destination="Test Location",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=2),
+        )
+        original_updated_at = itinerary.updated_at
+
+        import time
+        time.sleep(0.01)
+
+        itinerary.title = "Updated Title"
+        itinerary.save()
+
+        self.assertGreater(itinerary.updated_at, original_updated_at)

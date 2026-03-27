@@ -103,3 +103,90 @@ class ItinerarySerializerTest(TestCase):
 
         self.assertFalse(serializer.is_valid())
         self.assertIn("non_field_errors", serializer.errors)
+
+    def test_activities_field_accepts_empty_list(self):
+        """Test that activities field accepts empty list"""
+        data = {
+            "title": "No Activities",
+            "destination": "Test City",
+            "start_date": "2026-10-01",
+            "end_date": "2026-10-05",
+            "activities": [],
+        }
+
+        serializer = ItinerarySerializer(data=data)
+
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.validated_data["activities"], [])
+
+    def test_activities_field_accepts_json_data(self):
+        """Test that activities field accepts valid JSON data"""
+        activities = [
+            {"name": "Morning Walk", "time": "8:00 AM"},
+            {"name": "Museum Visit", "time": "10:00 AM"},
+        ]
+        data = {
+            "title": "With Activities",
+            "destination": "Paris",
+            "start_date": "2026-11-01",
+            "end_date": "2026-11-05",
+            "activities": activities,
+        }
+
+        serializer = ItinerarySerializer(data=data)
+
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(len(serializer.validated_data["activities"]), 2)
+
+    def test_is_public_field_defaults_to_false(self):
+        """Test that is_public defaults to False if not provided"""
+        data = {
+            "title": "Default Privacy",
+            "destination": "Barcelona",
+            "start_date": "2026-12-01",
+            "end_date": "2026-12-05",
+        }
+
+        serializer = ItinerarySerializer(data=data)
+
+        self.assertTrue(serializer.is_valid())
+        itinerary = Itinerary.objects.create(**serializer.validated_data)
+        self.assertFalse(itinerary.is_public)
+
+    def test_is_public_field_can_be_set_to_true(self):
+        """Test that is_public can be explicitly set to True"""
+        data = {
+            "title": "Public Trip",
+            "destination": "Amsterdam",
+            "start_date": "2027-01-01",
+            "end_date": "2027-01-07",
+            "is_public": True,
+        }
+
+        serializer = ItinerarySerializer(data=data)
+
+        self.assertTrue(serializer.is_valid())
+        self.assertTrue(serializer.validated_data["is_public"])
+
+    def test_serializer_output_includes_all_fields(self):
+        """Test that serializer output includes all expected fields"""
+        itinerary = Itinerary.objects.create(
+            title="Complete Test",
+            destination="Complete Location",
+            start_date=date(2027, 2, 1),
+            end_date=date(2027, 2, 10),
+            is_public=True,
+            activities=[{"name": "Test Activity"}],
+        )
+
+        serializer = ItinerarySerializer(itinerary)
+
+        self.assertIn("id", serializer.data)
+        self.assertIn("title", serializer.data)
+        self.assertIn("destination", serializer.data)
+        self.assertIn("start_date", serializer.data)
+        self.assertIn("end_date", serializer.data)
+        self.assertIn("is_public", serializer.data)
+        self.assertIn("activities", serializer.data)
+        self.assertIn("created_at", serializer.data)
+        self.assertIn("updated_at", serializer.data)

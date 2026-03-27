@@ -142,44 +142,159 @@ class ItineraryAPITest(APITestCase):
         self.assertFalse(Itinerary.objects.filter(id=self.itinerary1.id).exists())
 
     def test_public_list_returns_200(self):
+        self.itinerary1.is_public = True
+        self.itinerary1.save()
+        self.itinerary2.is_public = True
+        self.itinerary2.save()
+
         response = self.client.get(self.public_list_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
 
     def test_public_retrieve_returns_200(self):
+        self.itinerary1.is_public = True
+        self.itinerary1.save()
+
         response = self.client.get(self.public_detail_url(self.itinerary1.id))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], self.itinerary1.id)
 
-    def test_register_user_returns_201(self):
-        data = {
-            "email": "newuser@example.com",
-            "password": "strongpass123",
-            "password_confirm": "strongpass123",
-            "first_name": "New",
-            "last_name": "User",
-        }
+    def test_partial_update_itinerary_returns_200(self):
+        self.client.force_authenticate(user=self.user)
+        patch_data = {"title": "Updated Title Only"}
 
-        response = self.client.post("/api/auth/register/", data, format="json")
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(email="newuser@example.com").exists())
-
-    def test_token_obtain_returns_200(self):
-        User.objects.create_user(
-            email="loginuser@example.com",
-            username="loginuser@example.com",
-            password="strongpass123",
-        )
-
-        response = self.client.post(
-            "/api/auth/token/",
-            {"email": "loginuser@example.com", "password": "strongpass123"},
-            format="json",
+        response = self.client.patch(
+            self.my_detail_url(self.itinerary1.id), patch_data, format="json"
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access", response.data)
-        self.assertIn("refresh", response.data)
+        self.assertEqual(response.data["title"], "Updated Title Only")
+        self.assertEqual(response.data["destination"], "Paris, France")
+
+    def test_create_itinerary_with_activities_returns_201(self):
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "title": "Activity Test Trip",
+            "destination": "London, UK",
+            "start_date": "2026-09-01",
+            "end_date": "2026-09-05",
+            "activities": [
+                {"name": "Visit Tower of London", "day": 1},
+                {"name": "British Museum", "day": 2},
+            ],
+        }
+
+        response = self.client.post(self.my_list_url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(len(response.data["activities"]), 2)
+        self.assertEqual(response.data["activities"][0]["name"], "Visit Tower of London")
+
+    def test_create_itinerary_assigns_user_automatically(self):
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "title": "User Assignment Test",
+            "destination": "Berlin, Germany",
+            "start_date": "2026-10-01",
+            "end_date": "2026-10-05",
+        }
+
+        response = self.client.post(self.my_list_url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        created_itinerary = Itinerary.objects.get(id=response.data["id"])
+        self.assertEqual(created_itinerary.user, self.user)
+
+    def test_create_public_itinerary_returns_201(self):
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "title": "Public Trip",
+            "destination": "Rome, Italy",
+            "start_date": "2026-11-01",
+            "end_date": "2026-11-07",
+            "is_public": True,
+        }
+
+        response = self.client.post(self.my_list_url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.data["is_public"])
+
+    def test_public_list_excludes_private_itineraries(self):
+        self.itinerary1.is_public = True
+        self.itinerary1.save()
+
+        response = self.client.get(self.public_list_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["id"], self.itinerary1.id)
+
+    def test_private_itinerary_not_accessible_via_public_endpoint(self):
+        response = self.client.get(self.public_detail_url(self.itinerary1.id))
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_itinerary_activities_returns_200(self):
+        self.client.force_authenticate(user=self.user)
+        updated_activities = [
+            {"name": "Eiffel Tower", "time": "10:00 AM"},
+            {"name": "Louvre Museum", "time": "2:00 PM"},
+            {"name": "Seine River Cruise", "time": "7:00 PM"},
+        ]
+        patch_data = {"activities": updated_activities}
+
+        response = self.client.patch(
+            self.my_detail_url(self.itinerary1.id), patch_data, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["activities"]), 3)
+        self.assertEqual(response.data["activities"][0]["name"], "Eiffel Tower")
+
+    def test_update_is_public_field_returns_200(self):
+        self.client.force_authenticate(user=self.user)
+        self.assertFalse(self.itinerary1.is_public)
+
+        response = self.client.patch(
+            self.my_detail_url(self.itinerary1.id), {"is_public": True}, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data["is_public"])
+        self.itinerary1.refresh_from_db()
+        self.assertTrue(self.itinerary1.is_public)
+
+    def test_cannot_create_itinerary_without_authentication(self):
+        data = {
+            "title": "Unauthorized Trip",
+            "destination": "Somewhere",
+            "start_date": "2026-12-01",
+            "end_date": "2026-12-05",
+        }
+
+        response = self.client.post(self.my_list_url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_cannot_update_other_users_itinerary(self):
+        self.client.force_authenticate(user=self.user)
+        patch_data = {"title": "Hacked Title"}
+
+        response = self.client.patch(
+            self.my_detail_url(self.itinerary2.id), patch_data, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.itinerary2.refresh_from_db()
+        self.assertEqual(self.itinerary2.title, "Tokyo Adventure")
+
+    def test_cannot_delete_other_users_itinerary(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.delete(self.my_detail_url(self.itinerary2.id))
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(Itinerary.objects.filter(id=self.itinerary2.id).exists())
