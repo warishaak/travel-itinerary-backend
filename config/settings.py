@@ -14,6 +14,10 @@ import os
 from pathlib import Path
 
 import dj_database_url
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +43,7 @@ if hostname:
 
 
 INSTALLED_APPS = [
+    "config",
     "users",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -198,3 +203,9 @@ else:
         "http://localhost:5173",
         "http://localhost:3000",
     ]
+
+
+# SendGrid Email Configuration
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+FROM_EMAIL = os.getenv("FROM_EMAIL", "noreply@example.com")
+DEFAULT_TO_EMAIL = os.getenv("TO_EMAIL")
