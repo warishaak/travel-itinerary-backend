@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('itineraries', '0003_itinerary_user'),
+        ("itineraries", "0003_itinerary_user"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='itinerary',
-            name='activities',
+            model_name="itinerary",
+            name="activities",
             field=models.JSONField(blank=True, default=list),
         ),
         migrations.AddField(
-            model_name='itinerary',
-            name='is_public',
+            model_name="itinerary",
+            name="is_public",
             field=models.BooleanField(default=False),
         ),
     ]
