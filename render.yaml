@@ -15,7 +15,7 @@ services:
       - key: DEBUG
         value: "False"
       - key: PYTHON_VERSION
-        value: "3.13.0"
+        value: "3.14.3"
       - key: ADMIN_EMAIL
         value: admin@example.com
       - key: ADMIN_USERNAME
