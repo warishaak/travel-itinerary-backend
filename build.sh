@@ -3,14 +3,16 @@
 
 set -o errexit
 
-# Install dependencies from root
+echo "==> Installing dependencies..."
 pip install -r requirements.txt
 
-# Collect static files
+echo "==> Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Run migrations
+echo "==> Running migrations..."
 python manage.py migrate
 
-# Create admin user
-python manage.py create_admin
+echo "==> Creating admin user..."
+python manage.py create_admin 2>&1 || echo "Warning: Failed to create admin user"
+
+echo "==> Build complete!"
