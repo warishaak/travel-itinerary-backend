@@ -205,8 +205,9 @@ class EmailService:
         Returns:
             bool: True if email was sent successfully, False otherwise
         """
-        frontend_url = settings.FRONTEND_URL
-        reset_link = f"{frontend_url}/reset-password/{reset_token}"
+        frontend_url = settings.FRONTEND_URL.rstrip("/")
+        # Hash routing avoids static-host deep-link 404s for emailed reset URLs.
+        reset_link = f"{frontend_url}/#/reset-password/{reset_token}"
 
         subject = "Reset Your Password - Travel Itinerary"
         html_content = f"""
