@@ -9,6 +9,7 @@ class User(AbstractUser):
     """Custom user model using email as the unique identifier."""
 
     email = models.EmailField(unique=True)
+    profile_image = models.URLField(max_length=500, blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

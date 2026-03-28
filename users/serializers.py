@@ -12,16 +12,16 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name"]
+        fields = ["id", "email", "first_name", "last_name", "profile_image"]
         read_only_fields = ["id", "email"]
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
-    """Serializer for updating user profile (first_name, last_name only)."""
+    """Serializer for updating user profile (first_name, last_name, profile_image)."""
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name"]
+        fields = ["first_name", "last_name", "profile_image"]
 
 
 class RegisterSerializer(serializers.ModelSerializer):

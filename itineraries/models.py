@@ -16,6 +16,7 @@ class Itinerary(models.Model):
     end_date = models.DateField()
     is_public = models.BooleanField(default=False)
     activities = models.JSONField(default=list, blank=True)
+    images = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
