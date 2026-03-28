@@ -14,6 +14,7 @@ class ItinerarySerializer(serializers.ModelSerializer):
             "end_date",
             "is_public",
             "activities",
+            "images",
             "created_at",
             "updated_at",
         ]
