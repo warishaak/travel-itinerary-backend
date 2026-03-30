@@ -1,7 +1,12 @@
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+
+from users.models import PasswordReset
 
 from . import get_authenticated_client
 from .test_factories import UserFactory
@@ -13,6 +18,7 @@ class UserRegistrationAPITest(APITestCase):
     """Integration tests for user registration API endpoint."""
 
     def setUp(self):
+        cache.clear()
         self.register_url = reverse("register")
 
     def test_register_with_valid_data_returns_201(self):
@@ -291,3 +297,84 @@ class JWTAuthenticationTest(APITestCase):
         """Test accessing protected endpoint without token returns 401."""
         response = self.client.get(self.me_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class PasswordResetAPITest(APITestCase):
+    """Integration tests for password reset request/confirm endpoints."""
+
+    def setUp(self):
+        cache.clear()
+        self.user = UserFactory.create_user(
+            email="resetuser@example.com", password="OldPass123!"
+        )
+        self.request_url = reverse("password_reset_request")
+        self.confirm_url = reverse("password_reset_confirm")
+
+    @patch("users.views.email_service.send_password_reset_email", return_value=True)
+    def test_request_password_reset_for_existing_user_creates_token(
+        self, mock_send_email
+    ):
+        """Requesting reset for an existing user should create an active token."""
+        response = self.client.post(self.request_url, {"email": self.user.email})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("message", response.data)
+        self.assertTrue(PasswordReset.objects.filter(user=self.user, used=False).exists())
+        mock_send_email.assert_called_once()
+
+    @patch("users.views.email_service.send_password_reset_email", return_value=True)
+    def test_request_password_reset_for_unknown_user_returns_generic_success(
+        self, mock_send_email
+    ):
+        """Unknown emails must still return generic success to prevent enumeration."""
+        response = self.client.post(self.request_url, {"email": "unknown@example.com"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("message", response.data)
+        mock_send_email.assert_not_called()
+
+    @patch("users.views.email_service.send_password_reset_email", return_value=True)
+    def test_password_reset_request_is_rate_limited_but_still_returns_200(
+        self, mock_send_email
+    ):
+        """Scoped throttling should eventually return 429 for burst reset requests."""
+        responses = []
+        for _ in range(6):
+            responses.append(self.client.post(self.request_url, {"email": self.user.email}))
+
+        self.assertEqual(responses[-1].status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertGreaterEqual(mock_send_email.call_count, 1)
+
+    def test_confirm_password_reset_with_valid_token_updates_password(self):
+        """Valid token should change password and mark token as used."""
+        reset = PasswordReset.create_for_user(self.user)
+        new_password = "BrandNewPass123!"
+
+        response = self.client.post(
+            self.confirm_url,
+            {
+                "token": reset.token,
+                "password": new_password,
+                "password_confirm": new_password,
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        reset.refresh_from_db()
+        self.assertTrue(self.user.check_password(new_password))
+        self.assertTrue(reset.used)
+
+    def test_confirm_password_reset_with_invalid_token_returns_400(self):
+        """Invalid token should be rejected."""
+        response = self.client.post(
+            self.confirm_url,
+            {
+                "token": "invalid-token",
+                "password": "BrandNewPass123!",
+                "password_confirm": "BrandNewPass123!",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("token", response.data)

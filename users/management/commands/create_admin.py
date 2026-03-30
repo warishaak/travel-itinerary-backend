@@ -1,7 +1,7 @@
 import os
 
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 User = get_user_model()
 
@@ -10,9 +10,24 @@ class Command(BaseCommand):
     help = "Create a superuser if one does not exist"
 
     def handle(self, *args, **options):
-        email = os.getenv("ADMIN_EMAIL", "admin@example.com")
-        username = os.getenv("ADMIN_USERNAME", "admin")
-        password = os.getenv("ADMIN_PASSWORD", "admin123")
+        email = os.getenv("ADMIN_EMAIL")
+        username = os.getenv("ADMIN_USERNAME")
+        password = os.getenv("ADMIN_PASSWORD")
+
+        missing_vars = []
+        if not email:
+            missing_vars.append("ADMIN_EMAIL")
+        if not username:
+            missing_vars.append("ADMIN_USERNAME")
+        if not password:
+            missing_vars.append("ADMIN_PASSWORD")
+
+        if missing_vars:
+            missing = ", ".join(missing_vars)
+            raise CommandError(
+                f"Missing required admin environment variables: {missing}. "
+                "Refusing to create/update admin with insecure defaults."
+            )
 
         # Try to get existing user or create new one
         user, created = User.objects.get_or_create(

@@ -2,10 +2,14 @@
 
 from django.test import TestCase
 from django.urls import resolve, reverse
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from itineraries.views import ItineraryViewSet, PublicItineraryViewSet
-from users.views import CurrentUserView, RegisterView
+from users.views import (
+    CurrentUserView,
+    RegisterView,
+    ThrottledTokenObtainPairView,
+    ThrottledTokenRefreshView,
+)
 
 
 class URLRoutingTest(TestCase):
@@ -70,7 +74,7 @@ class URLRoutingTest(TestCase):
         self.assertEqual(url, "/api/auth/token/")
 
         resolver = resolve("/api/auth/token/")
-        self.assertEqual(resolver.func.cls, TokenObtainPairView)
+        self.assertEqual(resolver.func.cls, ThrottledTokenObtainPairView)
 
     def test_token_refresh_url_resolves(self):
         """Test that token refresh URL resolves correctly."""
@@ -78,7 +82,7 @@ class URLRoutingTest(TestCase):
         self.assertEqual(url, "/api/auth/token/refresh/")
 
         resolver = resolve("/api/auth/token/refresh/")
-        self.assertEqual(resolver.func.cls, TokenRefreshView)
+        self.assertEqual(resolver.func.cls, ThrottledTokenRefreshView)
 
     def test_api_urls_use_correct_prefix(self):
         """Test that all API URLs use /api/ prefix."""

@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import TestCase
 
 User = get_user_model()
@@ -72,17 +73,11 @@ class CreateAdminCommandTest(TestCase):
             # Check output message
             self.assertIn("Updated admin user", out.getvalue())
 
-    def test_command_uses_default_values(self):
-        """Test that command uses default values when env vars not set."""
-        out = StringIO()
-        call_command("create_admin", stdout=out)
-
-        # Check that user was created with defaults
-        user = User.objects.get(email="admin@example.com")
-        self.assertEqual(user.username, "admin")
-        self.assertTrue(user.is_staff)
-        self.assertTrue(user.is_superuser)
-        self.assertTrue(user.check_password("admin123"))
+    def test_command_fails_when_required_env_vars_missing(self):
+        """Test command fails fast when required admin secrets are not set."""
+        with patch.dict("os.environ", {}, clear=True):
+            with self.assertRaises(CommandError):
+                call_command("create_admin", stdout=StringIO())
 
     def test_command_updates_password_for_existing_admin(self):
         """Test that command updates password for existing admin."""
@@ -91,7 +86,14 @@ class CreateAdminCommandTest(TestCase):
             email="admin@example.com", username="admin", password="oldpassword"
         )
 
-        with patch.dict("os.environ", {"ADMIN_PASSWORD": "newpassword123"}):
+        with patch.dict(
+            "os.environ",
+            {
+                "ADMIN_EMAIL": "admin@example.com",
+                "ADMIN_USERNAME": "admin",
+                "ADMIN_PASSWORD": "newpassword123",
+            },
+        ):
             call_command("create_admin", stdout=StringIO())
 
             # Refresh and check password was updated
@@ -110,7 +112,15 @@ class CreateAdminCommandTest(TestCase):
             is_superuser=False,
         )
 
-        call_command("create_admin", stdout=StringIO())
+        with patch.dict(
+            "os.environ",
+            {
+                "ADMIN_EMAIL": "admin@example.com",
+                "ADMIN_USERNAME": "admin",
+                "ADMIN_PASSWORD": "pass",
+            },
+        ):
+            call_command("create_admin", stdout=StringIO())
 
         # Refresh and check flags were set
         user.refresh_from_db()
@@ -120,7 +130,15 @@ class CreateAdminCommandTest(TestCase):
     def test_command_output_format(self):
         """Test that command outputs properly formatted messages."""
         out = StringIO()
-        call_command("create_admin", stdout=out)
+        with patch.dict(
+            "os.environ",
+            {
+                "ADMIN_EMAIL": "admin@example.com",
+                "ADMIN_USERNAME": "admin",
+                "ADMIN_PASSWORD": "pass",
+            },
+        ):
+            call_command("create_admin", stdout=out)
         output = out.getvalue()
 
         # Check output contains expected elements
@@ -147,8 +165,16 @@ class CreateAdminCommandTest(TestCase):
     def test_command_is_idempotent(self):
         """Test that running command multiple times is safe."""
         # Run command twice
-        call_command("create_admin", stdout=StringIO())
-        call_command("create_admin", stdout=StringIO())
+        with patch.dict(
+            "os.environ",
+            {
+                "ADMIN_EMAIL": "admin@example.com",
+                "ADMIN_USERNAME": "admin",
+                "ADMIN_PASSWORD": "pass",
+            },
+        ):
+            call_command("create_admin", stdout=StringIO())
+            call_command("create_admin", stdout=StringIO())
 
         # Should only have one admin user
         admin_users = User.objects.filter(email="admin@example.com")

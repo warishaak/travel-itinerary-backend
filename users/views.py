@@ -3,9 +3,11 @@ import logging
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from config.email_service import email_service
 
@@ -27,7 +29,9 @@ class RegisterView(generics.CreateAPIView):
 
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    permission_classes = ()
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth_register"
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -64,7 +68,9 @@ class RequestPasswordResetView(APIView):
     Always returns 200 to prevent user enumeration.
     """
 
-    permission_classes = ()
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "password_reset"
 
     def post(self, request):
         serializer = RequestPasswordResetSerializer(data=request.data)
@@ -127,7 +133,9 @@ class ConfirmPasswordResetView(APIView):
     Validates token and sets new password.
     """
 
-    permission_classes = ()
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "password_reset_confirm"
 
     def post(self, request):
         serializer = ConfirmPasswordResetSerializer(data=request.data)
@@ -151,3 +159,19 @@ class ConfirmPasswordResetView(APIView):
             {"message": "Password has been reset successfully."},
             status=status.HTTP_200_OK,
         )
+
+
+class ThrottledTokenObtainPairView(TokenObtainPairView):
+    """Public JWT login endpoint with scoped throttling."""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth_login"
+
+
+class ThrottledTokenRefreshView(TokenRefreshView):
+    """Public JWT refresh endpoint with scoped throttling."""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth_token_refresh"

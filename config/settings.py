@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 import dj_database_url
 from dotenv import load_dotenv
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "itineraries",
 ]
 
@@ -62,6 +64,32 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/hour",
+        "user": "1000/hour",
+        "auth_login": "10/minute",
+        "auth_token_refresh": "30/minute",
+        "auth_register": "10/hour",
+        "password_reset": "5/hour",
+        "password_reset_confirm": "10/hour",
+    },
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
