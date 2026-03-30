@@ -9,14 +9,14 @@
 - [🚀 Live Demo](#-live-demo)
 - [📡 API Endpoints Reference](#-api-endpoints-reference)
 - [🛠️ Tech Stack](#tech-stack)
-- [▶️ How to Run the Application](#-how-to-run-the-application)
+- [▶️ How to Run the Application](#how-to-run-the-application)
 - [🏗️ Project Structure Overview](#-project-structure-overview)
-- [🧪 How to Run Tests](#-how-to-run-tests)
-- [💡 Key Technical Decisions](#-key-technical-decisions)
-- [🏢 Enterprise Ops and Governance](#-enterprise-ops-and-governance)
-- [🔒 Security](#-security)
-- [✅ Code Quality](#-code-quality)
-- [🔄 CI Pipeline and Git Practices](#-ci-pipeline-and-git-practices)
+- [🧪 How to Run Tests](#how-to-run-tests)
+- [💡 Key Technical Decisions](#key-technical-decisions)
+- [🏢 Enterprise Ops and Governance](#enterprise-ops-and-governance)
+- [🔒 Security](#security)
+- [✅ Code Quality](#code-quality)
+- [🔄 CI Pipeline and Git Practices](#ci-pipeline-and-git-practices)
 
 ## 📖 Project Overview
 
@@ -205,7 +205,7 @@ These endpoints allow **anyone** (including non-authenticated users) to browse p
 ### 1. Clone and enter the project
 
 ```bash
-git clone <https://github.com/warishaak/travel-itinerary-frontend.git>
+git clone https://github.com/warishaak/travel-itinerary-backend.git
 cd travel-itinerary-backend
 ```
 
