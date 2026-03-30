@@ -64,6 +64,25 @@ jobs:
       - name: Run Ruff linter
         run: ruff check . --exclude=venv,migrations
 
+  security-lint:
+    name: Security Lint (Bandit)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Bandit
+        run: pip install bandit==1.8.3
+
+      - name: Run Bandit security scan
+        run: bandit -r config itineraries users -x "*/migrations/*"
+
   django-checks:
     name: Django System Checks
     runs-on: ubuntu-latest
@@ -126,7 +145,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_travel_itinerary
         run: |
           coverage run --source='.' manage.py test --verbosity=2
-          coverage report --show-missing
+          coverage report --show-missing --fail-under=80
           coverage html
 
       - name: Coverage Summary
