@@ -14,12 +14,16 @@ def validate_date_window(start_date, end_date, is_create):
             raise serializers.ValidationError("Trip duration cannot exceed 1 year")
 
     if is_create and start_date and start_date < timezone.now().date():
-        raise serializers.ValidationError("Cannot create itinerary with start date in the past")
+        raise serializers.ValidationError(
+            "Cannot create itinerary with start date in the past"
+        )
 
 
 def validate_activities_limit(activities):
     if len(activities or []) > 100:
-        raise serializers.ValidationError("Maximum 100 activities allowed per itinerary")
+        raise serializers.ValidationError(
+            "Maximum 100 activities allowed per itinerary"
+        )
 
 
 def validate_status_value(status):

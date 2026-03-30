@@ -2,7 +2,7 @@
 Tests for itinerary status lifecycle functionality.
 """
 
-from datetime import date, timedelta
+from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase

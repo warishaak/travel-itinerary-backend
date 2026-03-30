@@ -319,7 +319,9 @@ class PasswordResetAPITest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("message", response.data)
-        self.assertTrue(PasswordReset.objects.filter(user=self.user, used=False).exists())
+        self.assertTrue(
+            PasswordReset.objects.filter(user=self.user, used=False).exists()
+        )
         mock_send_email.assert_called_once()
 
     @patch("users.views.email_service.send_password_reset_email", return_value=True)
@@ -340,7 +342,9 @@ class PasswordResetAPITest(APITestCase):
         """Scoped throttling should eventually return 429 for burst reset requests."""
         responses = []
         for _ in range(6):
-            responses.append(self.client.post(self.request_url, {"email": self.user.email}))
+            responses.append(
+                self.client.post(self.request_url, {"email": self.user.email})
+            )
 
         self.assertEqual(responses[-1].status_code, status.HTTP_429_TOO_MANY_REQUESTS)
         self.assertGreaterEqual(mock_send_email.call_count, 1)

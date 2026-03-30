@@ -74,7 +74,9 @@ class ItineraryViewSet(viewsets.ModelViewSet):
             itinerary=itinerary,
             new_status=input_serializer.validated_data["status"],
         )
-        return Response(ItineraryReadSerializer(updated).data, status=status.HTTP_200_OK)
+        return Response(
+            ItineraryReadSerializer(updated).data, status=status.HTTP_200_OK
+        )
 
 
 class PublicItineraryViewSet(viewsets.ReadOnlyModelViewSet):
