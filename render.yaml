@@ -16,6 +16,8 @@ services:
         value: "False"
       - key: PYTHON_VERSION
         value: "3.14.3"
+      - key: FRONTEND_URL
+        value: "https://travel-itinerary-frontend-5oyl.onrender.com"
       - key: DATABASE_URL
         fromDatabase:
           name: travel-itinerary-db
