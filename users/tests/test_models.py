@@ -14,7 +14,7 @@ class UserModelTest(TestCase):
         """Test User.objects.create_user() with valid data."""
         user = User.objects.create_user(
             email="test@example.com",
-            password="TestPass123!",
+            password="TestPass123!",  # nosec B106
             username="test@example.com",
             first_name="Test",
             last_name="User",
@@ -24,7 +24,7 @@ class UserModelTest(TestCase):
         self.assertEqual(user.username, "test@example.com")
         self.assertEqual(user.first_name, "Test")
         self.assertEqual(user.last_name, "User")
-        self.assertNotEqual(user.password, "TestPass123!")
+        self.assertNotEqual(user.password, "TestPass123!")  # nosec B106
         self.assertTrue(user.check_password("TestPass123!"))
 
     def test_user_string_representation(self):
@@ -39,14 +39,14 @@ class UserModelTest(TestCase):
         with self.assertRaises(IntegrityError):
             User.objects.create_user(
                 email="duplicate@example.com",
-                password="TestPass123!",
+                password="TestPass123!",  # nosec B106
                 username="duplicate2@example.com",
             )
 
     def test_email_is_required(self):
         """Test creating user without email creates user with empty string."""
         user = User.objects.create_user(
-            email="", password="TestPass123!", username="test"
+            email="", password="TestPass123!", username="test"  # nosec B106
         )
         self.assertEqual(user.email, "")
         self.assertEqual(user.username, "test")
@@ -56,9 +56,9 @@ class UserModelTest(TestCase):
         self.assertEqual(User.USERNAME_FIELD, "email")
 
         user = UserFactory.create_user(
-            email="auth@example.com", password="TestPass123!"
+            email="auth@example.com", password="TestPass123!"  # nosec B106
         )
-        self.assertTrue(user.check_password("TestPass123!"))
+        self.assertTrue(user.check_password("TestPass123!"))  # nosec B106
 
     def test_required_fields_configuration(self):
         """Test REQUIRED_FIELDS contains expected fields."""
@@ -84,7 +84,9 @@ class UserModelTest(TestCase):
     def test_create_superuser(self):
         """Test User.objects.create_superuser() sets correct flags."""
         superuser = User.objects.create_superuser(
-            email="admin@example.com", password="AdminPass123!", username="admin"
+            email="admin@example.com",
+            password="AdminPass123!",
+            username="admin",  # nosec B106
         )
 
         self.assertTrue(superuser.is_superuser)

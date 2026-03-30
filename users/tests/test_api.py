@@ -48,8 +48,8 @@ class UserRegistrationAPITest(APITestCase):
         """Test password is hashed, not stored as plain text."""
         data = UserFactory.build_registration_data(
             email="hashtest@example.com",
-            password="TestPass123!",
-            password_confirm="TestPass123!",
+            password="TestPass123!",  # nosec B106
+            password_confirm="TestPass123!",  # nosec B106
         )
         response = self.client.post(self.register_url, data)
 
@@ -94,7 +94,10 @@ class UserRegistrationAPITest(APITestCase):
         test_cases = [
             {},
             {"email": "test@example.com"},
-            {"password": "TestPass123!", "password_confirm": "TestPass123!"},
+            {
+                "password": "TestPass123!",
+                "password_confirm": "TestPass123!",
+            },  # nosec B106
         ]
 
         for data in test_cases:
@@ -132,7 +135,7 @@ class CurrentUserAPITest(APITestCase):
     def setUp(self):
         self.user = UserFactory.create_user(
             email="currentuser@example.com",
-            password="TestPass123!",
+            password="TestPass123!",  # nosec B106
             first_name="Current",
             last_name="User",
         )
@@ -230,7 +233,7 @@ class JWTAuthenticationTest(APITestCase):
 
     def setUp(self):
         self.user = UserFactory.create_user(
-            email="jwtuser@example.com", password="JWTPass123!"
+            email="jwtuser@example.com", password="JWTPass123!"  # nosec B106
         )
         self.token_url = reverse("token_obtain_pair")
         self.refresh_url = reverse("token_refresh")
@@ -238,7 +241,7 @@ class JWTAuthenticationTest(APITestCase):
 
     def test_obtain_token_with_valid_credentials_returns_200(self):
         """Test obtaining JWT token with valid credentials."""
-        data = {"email": "jwtuser@example.com", "password": "JWTPass123!"}
+        data = {"email": "jwtuser@example.com", "password": "JWTPass123!"}  # nosec B106
         response = self.client.post(self.token_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -254,7 +257,10 @@ class JWTAuthenticationTest(APITestCase):
 
     def test_obtain_token_with_nonexistent_email_returns_401(self):
         """Test obtaining token with non-existent email returns 401."""
-        data = {"email": "nonexistent@example.com", "password": "TestPass123!"}
+        data = {
+            "email": "nonexistent@example.com",
+            "password": "TestPass123!",
+        }  # nosec B106
         response = self.client.post(self.token_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -262,7 +268,8 @@ class JWTAuthenticationTest(APITestCase):
     def test_access_token_grants_access_to_protected_endpoints(self):
         """Test access token allows access to protected endpoints."""
         token_response = self.client.post(
-            self.token_url, {"email": "jwtuser@example.com", "password": "JWTPass123!"}
+            self.token_url,
+            {"email": "jwtuser@example.com", "password": "JWTPass123!"},  # nosec B106
         )
         access_token = token_response.data["access"]
 
@@ -305,7 +312,7 @@ class PasswordResetAPITest(APITestCase):
     def setUp(self):
         cache.clear()
         self.user = UserFactory.create_user(
-            email="resetuser@example.com", password="OldPass123!"
+            email="resetuser@example.com", password="OldPass123!"  # nosec B106
         )
         self.request_url = reverse("password_reset_request")
         self.confirm_url = reverse("password_reset_confirm")
@@ -352,7 +359,7 @@ class PasswordResetAPITest(APITestCase):
     def test_confirm_password_reset_with_valid_token_updates_password(self):
         """Valid token should change password and mark token as used."""
         reset = PasswordReset.create_for_user(self.user)
-        new_password = "BrandNewPass123!"
+        new_password = "BrandNewPass123!"  # nosec B105
 
         response = self.client.post(
             self.confirm_url,

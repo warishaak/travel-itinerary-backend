@@ -13,11 +13,11 @@ class UserFactory:
     def build_valid_user_data(**kwargs):
         """Build valid user data dictionary."""
         random_suffix = "".join(
-            random.choices(string.ascii_lowercase + string.digits, k=6)
+            random.choices(string.ascii_lowercase + string.digits, k=6)  # nosec B311
         )
         default_data = {
             "email": f"testuser{random_suffix}@example.com",
-            "password": "TestPass123!",
+            "password": "TestPass123!",  # nosec B106
             "first_name": "Test",
             "last_name": "User",
         }
@@ -53,7 +53,7 @@ class UserFactory:
     def build_registration_data(**kwargs):
         """Build valid registration data with password_confirm field."""
         data = UserFactory.build_valid_user_data(**kwargs)
-        password = data.get("password", "TestPass123!")
+        password = data.get("password", "TestPass123!")  # nosec B106
         data["password_confirm"] = password
         return data
 
@@ -68,7 +68,7 @@ class UserFactory:
     def build_password_mismatch_data():
         """Build registration data with password mismatch."""
         data = UserFactory.build_registration_data()
-        data["password_confirm"] = "DifferentPassword123!"
+        data["password_confirm"] = "DifferentPassword123!"  # nosec B105
         return data
 
     @staticmethod

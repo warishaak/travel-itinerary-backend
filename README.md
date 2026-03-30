@@ -515,3 +515,7 @@ git push origin feat/some-change
 ```
 
 This repository is configured to encourage secure, maintainable, and enterprise-ready delivery.
+
+## 🤖 AI Usage Acknowledgement
+
+AI was used to generate the CI pipeline workflow file (`.github/workflows/main.yml`). The generated file was subsequently reviewed and validated to ensure it meets all project quality and security standards.

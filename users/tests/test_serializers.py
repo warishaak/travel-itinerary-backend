@@ -23,7 +23,9 @@ class RegisterSerializerTest(TestCase):
 
     def test_password_and_password_confirm_match(self):
         """Test validation passes when passwords match."""
-        data = UserFactory.build_registration_data(password="TestPass123!")
+        data = UserFactory.build_registration_data(
+            password="TestPass123!"
+        )  # nosec B106
         serializer = RegisterSerializer(data=data)
 
         self.assertTrue(serializer.is_valid())
@@ -64,7 +66,9 @@ class RegisterSerializerTest(TestCase):
     def test_password_similar_to_email_fails_validation(self):
         """Test password similar to email fails validation."""
         data = UserFactory.build_registration_data(
-            email="john@example.com", password="john123", password_confirm="john123"
+            email="john@example.com",
+            password="john123",
+            password_confirm="john123",  # nosec B106
         )
         serializer = RegisterSerializer(data=data)
 
@@ -74,7 +78,7 @@ class RegisterSerializerTest(TestCase):
     def test_numeric_only_password_fails_validation(self):
         """Test numeric-only password fails validation."""
         data = UserFactory.build_registration_data(
-            password="12345678", password_confirm="12345678"
+            password="12345678", password_confirm="12345678"  # nosec B106
         )
         serializer = RegisterSerializer(data=data)
 
@@ -96,7 +100,7 @@ class RegisterSerializerTest(TestCase):
     def test_password_min_length_validation(self):
         """Test password minimum length validation."""
         data = UserFactory.build_registration_data(
-            password="Test1!", password_confirm="Test1!"
+            password="Test1!", password_confirm="Test1!"  # nosec B106
         )
         serializer = RegisterSerializer(data=data)
 
@@ -107,8 +111,8 @@ class RegisterSerializerTest(TestCase):
         """Test serializer.save() creates user in database."""
         data = UserFactory.build_registration_data(
             email="create@example.com",
-            password="CreatePass123!",
-            password_confirm="CreatePass123!",
+            password="CreatePass123!",  # nosec B106
+            password_confirm="CreatePass123!",  # nosec B106
             first_name="Create",
             last_name="Test",
         )

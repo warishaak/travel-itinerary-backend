@@ -19,7 +19,9 @@ class StatusLifecycleTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
-            email="test@example.com", username="testuser", password="testpass123"
+            email="test@example.com",
+            username="testuser",
+            password="testpass123",  # nosec B106
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)

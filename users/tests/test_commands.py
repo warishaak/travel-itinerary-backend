@@ -24,7 +24,7 @@ class CreateAdminCommandTest(TestCase):
             {
                 "ADMIN_EMAIL": "test@example.com",
                 "ADMIN_USERNAME": "testadmin",
-                "ADMIN_PASSWORD": "testpass123",
+                "ADMIN_PASSWORD": "testpass123",  # nosec B106
             },
         ):
             out = StringIO()
@@ -35,7 +35,7 @@ class CreateAdminCommandTest(TestCase):
             self.assertEqual(user.username, "testadmin")
             self.assertTrue(user.is_staff)
             self.assertTrue(user.is_superuser)
-            self.assertTrue(user.check_password("testpass123"))
+            self.assertTrue(user.check_password("testpass123"))  # nosec B106
 
             # Check output message
             self.assertIn("Created admin user", out.getvalue())
@@ -46,7 +46,7 @@ class CreateAdminCommandTest(TestCase):
         user = User.objects.create_user(
             email="existing@example.com",
             username="existing",
-            password="oldpass",
+            password="oldpass",  # nosec B106
             is_staff=False,
             is_superuser=False,
         )
@@ -83,7 +83,9 @@ class CreateAdminCommandTest(TestCase):
         """Test that command updates password for existing admin."""
         # Create an admin user
         user = User.objects.create_superuser(
-            email="admin@example.com", username="admin", password="oldpassword"
+            email="admin@example.com",
+            username="admin",
+            password="oldpassword",  # nosec B106
         )
 
         with patch.dict(
@@ -107,7 +109,7 @@ class CreateAdminCommandTest(TestCase):
         user = User.objects.create_user(
             email="admin@example.com",
             username="admin",
-            password="pass",
+            password="pass",  # nosec B106
             is_staff=False,
             is_superuser=False,
         )

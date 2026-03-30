@@ -17,12 +17,12 @@ class ItineraryAPITest(APITestCase):
         self.user = User.objects.create_user(
             email="owner@example.com",
             username="owner@example.com",
-            password="strongpass123",
+            password="strongpass123",  # nosec B106
         )
         self.other_user = User.objects.create_user(
             email="other@example.com",
             username="other@example.com",
-            password="strongpass123",
+            password="strongpass123",  # nosec B106
         )
 
         self.itinerary1 = Itinerary.objects.create(
