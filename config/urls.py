@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework.routers import DefaultRouter
 
 from itineraries.views import ItineraryViewSet, PublicItineraryViewSet
 from users.views import ThrottledTokenObtainPairView, ThrottledTokenRefreshView
